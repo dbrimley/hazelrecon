@@ -248,6 +248,13 @@
         <async-backup-count>0</async-backup-count>
     </semaphore>
 
+    <serialization>
+        <portable-version>0</portable-version>
+        <portable-factories>
+            <portable-factory factory-id="1">com.craftedbytes.hazelcast.wan.demo.domain.PortableFactory</portable-factory>
+        </portable-factories>
+    </serialization>
+
     <services enable-defaults="true"/>
 
 </hazelcast>
