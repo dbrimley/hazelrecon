@@ -29,19 +29,19 @@
     </management-center>
     <wan-replication name="replication-route">
         <target-cluster group-name="eu-west-1" group-password="shamrock">
-            <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
+            <replication-impl>com.hazelcast.wan.impl.WanNoDelayReplication</replication-impl>
             <end-points>
                 <address>ec2-54-75-227-128.eu-west-1.compute.amazonaws.com:5701</address>
                 <address>ec2-54-75-226-206.eu-west-1.compute.amazonaws.com:5701</address>
             </end-points>
         </target-cluster>
         <target-cluster group-name="ap-southeast-1" group-password="wavell">
-            <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
+            <replication-impl>com.hazelcast.wan.impl.WanNoDelayReplication</replication-impl>
             <end-points>
                 <address>ec2-54-179-141-228.ap-southeast-1.compute.amazonaws.com</address>
                 <address>ec2-54-179-141-238.ap-southeast-1.compute.amazonaws.com</address>
             </end-points>
-        </target-cluster>
+        </target-cluster>Wa
     </wan-replication>
 
     <network>

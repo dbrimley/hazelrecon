@@ -30,14 +30,14 @@
 
     <wan-replication name="replication-route">
         <target-cluster group-name="us-east-1" group-password="badabing">
-            <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
+            <replication-impl>com.hazelcast.wan.impl.WanNoDelayReplication</replication-impl>
             <end-points>
                 <address>ec2-54-225-95-142.compute-1.amazonaws.com</address>
                 <address>ec2-54-225-98-182.compute-1.amazonaws.com</address>
             </end-points>
         </target-cluster>
         <target-cluster group-name="eu-west-1" group-password="shamrock">
-            <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
+            <replication-impl>com.hazelcast.wan.impl.WanNoDelayReplication</replication-impl>
             <end-points>
                 <address>ec2-54-75-227-128.eu-west-1.compute.amazonaws.com</address>
                 <address>ec2-54-75-226-206.eu-west-1.compute.amazonaws.com</address>
