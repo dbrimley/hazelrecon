@@ -28,7 +28,7 @@
     <management-center enabled="true">http://ec2-54-75-227-128.eu-west-1.compute.amazonaws.com:8080/mancenter-3.2.3
     </management-center>
 
-    <wan-replication name="my-wan-cluster">
+    <wan-replication name="replication-route">
         <target-cluster group-name="us-east-1" group-password="badabing">
             <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
             <end-points>
@@ -128,7 +128,9 @@
 
         <empty-queue-ttl>-1</empty-queue-ttl>
     </queue>
-    <map name="default">
+    <map name="cars"/>
+
+    <map name="replication">
         <!--
            Data type that will be used for storing recordMap.
            Possible values:
@@ -185,6 +187,12 @@
         -->
         <eviction-percentage>25</eviction-percentage>
         <!--
+            Minimum time in milliseconds which should pass before checking
+            if a partition of this map is evictable or not.
+            Default value is 100 millis.
+        -->
+        <min-eviction-check-millis>100</min-eviction-check-millis>
+        <!--
             While recovering from split-brain (network partitioning),
             map entries in the small cluster will merge into the bigger cluster
             based on the policy set here. When an entry merge into the
@@ -200,9 +208,11 @@
             com.hazelcast.map.merge.LatestUpdateMapMergePolicy ; entry with the latest update wins.
         -->
         <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
-        <wan-replication-ref name="my-wan-cluster">
+
+        <wan-replication-ref name="replication-route">
             <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
         </wan-replication-ref>
+
     </map>
 
     <multimap name="default">

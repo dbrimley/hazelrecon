@@ -25,15 +25,16 @@
     <properties>
         <property name="hazelcast.icmp.enabled">true</property>
     </properties>
-    <management-center enabled="true">http://ec2-54-75-227-128.eu-west-1.compute.amazonaws.com:8080/mancenter-3.2.3</management-center>
-    <wan-replication name="my-wan-cluster">
-     	<target-cluster group-name="eu-west-1" group-password="shamrock">
-		<replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
-                <end-points>
-                        <address>ec2-54-75-227-128.eu-west-1.compute.amazonaws.com:5701</address>
-                        <address>ec2-54-75-226-206.eu-west-1.compute.amazonaws.com:5701</address>
-                </end-points>
-	</target-cluster>
+    <management-center enabled="true">http://ec2-54-75-227-128.eu-west-1.compute.amazonaws.com:8080/mancenter-3.2.3
+    </management-center>
+    <wan-replication name="replication-route">
+        <target-cluster group-name="eu-west-1" group-password="shamrock">
+            <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
+            <end-points>
+                <address>ec2-54-75-227-128.eu-west-1.compute.amazonaws.com:5701</address>
+                <address>ec2-54-75-226-206.eu-west-1.compute.amazonaws.com:5701</address>
+            </end-points>
+        </target-cluster>
         <target-cluster group-name="ap-southeast-1" group-password="wavell">
             <replication-impl>com.hazelcast.wan.WanNoDelayReplication</replication-impl>
             <end-points>
@@ -59,7 +60,7 @@
             </multicast>
             <tcp-ip enabled="true">
                 <interface>ec2-54-225-95-142.compute-1.amazonaws.com</interface>
-		<interface>ec2-54-225-98-182.compute-1.amazonaws.com</interface>
+                <interface>ec2-54-225-98-182.compute-1.amazonaws.com</interface>
             </tcp-ip>
             <aws enabled="false">
                 <access-key>my-access-key</access-key>
@@ -77,8 +78,8 @@
         <interfaces enabled="false">
             <interface>10.10.1.*</interface>
         </interfaces>
-        <ssl enabled="false" />
-        <socket-interceptor enabled="false" />
+        <ssl enabled="false"/>
+        <socket-interceptor enabled="false"/>
         <symmetric-encryption enabled="false">
             <!--
                encryption algorithm such as
@@ -126,7 +127,10 @@
 
         <empty-queue-ttl>-1</empty-queue-ttl>
     </queue>
-    <map name="default">
+
+    <map name="cars"/>
+
+    <map name="replication">
         <!--
            Data type that will be used for storing recordMap.
            Possible values:
@@ -183,6 +187,12 @@
         -->
         <eviction-percentage>25</eviction-percentage>
         <!--
+            Minimum time in milliseconds which should pass before checking
+            if a partition of this map is evictable or not.
+            Default value is 100 millis.
+        -->
+        <min-eviction-check-millis>100</min-eviction-check-millis>
+        <!--
             While recovering from split-brain (network partitioning),
             map entries in the small cluster will merge into the bigger cluster
             based on the policy set here. When an entry merge into the
@@ -198,86 +208,11 @@
             com.hazelcast.map.merge.LatestUpdateMapMergePolicy ; entry with the latest update wins.
         -->
         <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
-        <wan-replication-ref name="my-wan-cluster">
+
+        <wan-replication-ref name="replication-route">
             <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
         </wan-replication-ref>
-    </map>
-    <map name="rep">
-        <!--
-                        Data type that will be used for storing recordMap.
-           Possible values:
-           BINARY (default): keys and values will be stored as binary data
-           OBJECT : values will be stored in their object forms
-           OFFHEAP : values will be stored in non-heap region of JVM
-        -->
-        <in-memory-format>BINARY</in-memory-format>
 
-        <!--
-                         Number of backups. If 1 is set as the backup-count for example,
-            then all entries of the map will be copied to another JVM for
-            fail-safety. 0 means no backup.
-        -->
-        <backup-count>1</backup-count>
-        <!--
-                         Number of async backups. 0 means no backup.
-        -->
-        <async-backup-count>0</async-backup-count>
-        <!--
-             			Maximum number of seconds for each entry to stay in the map. Entries that are
-			older than <time-to-live-seconds> and not updated for <time-to-live-seconds>
-			will get automatically evicted from the map.
-			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
-		-->
-        <time-to-live-seconds>0</time-to-live-seconds>
-        <!--
-             			Maximum number of seconds for each entry to stay idle in the map. Entries that are
-			idle(not touched) for more than <max-idle-seconds> will get
-			automatically evicted from the map. Entry is touched if get, put or containsKey is called.
-			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
-		-->
-        <max-idle-seconds>0</max-idle-seconds>
-        <!--
-                         Valid values are:
-            NONE (no eviction),
-            LRU (Least Recently Used),
-            LFU (Least Frequently Used).
-            NONE is the default.
-        -->
-        <eviction-policy>NONE</eviction-policy>
- 
-        <!--
-                         Maximum size of the map. When max size is reached,
-            map is evicted based on the policy defined.
-            Any integer between 0 and Integer.MAX_VALUE. 0 means
-            Integer.MAX_VALUE. Default is 0.
-        -->
-        <max-size policy="PER_NODE">0</max-size>
-        <!--
-                         When max. size is reached, specified percentage of
-            the map will be evicted. Any integer between 0 and 100.
-            If 25 is set for example, 25% of the entries will
-            get evicted.
-        -->
-        <eviction-percentage>25</eviction-percentage>
-        <!--
-                         While recovering from split-brain (network partitioning),
-            map entries in the small cluster will merge into the bigger cluster
-            based on the policy set here. When an entry merge into the
-            cluster, there might an existing entry with the same key already.
-            Values of these entries might be different for that same key.
-            Which value should be set for the key? Conflict is resolved by
-            the policy set here. Default policy is PutIfAbsentMapMergePolicy
-
-            There are built-in merge policies such as
-            com.hazelcast.map.merge.PassThroughMergePolicy; entry will be added if there is no existing entry for the key.
-            com.hazelcast.map.merge.PutIfAbsentMapMergePolicy ; entry will be added if the merging entry doesn't exist in the cluster.
-            com.hazelcast.map.merge.HigherHitsMapMergePolicy ; entry with the higher hits wins.
-            com.hazelcast.map.merge.LatestUpdateMapMergePolicy ; entry with the latest update wins.
-        -->
-        <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
-        <wan-replication-ref name="my-wan-cluster">
-            <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
-        </wan-replication-ref>
     </map>
     <multimap name="default">
         <backup-count>1</backup-count>
@@ -320,6 +255,6 @@
         </portable-factories>
     </serialization>
 
-    <services enable-defaults="true" />
+    <services enable-defaults="true"/>
 
 </hazelcast>
