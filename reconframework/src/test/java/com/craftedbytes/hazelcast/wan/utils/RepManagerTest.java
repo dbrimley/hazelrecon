@@ -2,6 +2,8 @@ package com.craftedbytes.hazelcast.wan.utils;
 
 import com.craftedbytes.hazelcast.MockHazelcastInstance;
 import com.craftedbytes.hazelcast.MockIMap;
+import com.craftedbytes.hazelcast.wan.RepKey;
+import com.craftedbytes.hazelcast.wan.RepManager;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.EntryAdapter;
@@ -10,10 +12,8 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.nio.serialization.DataSerializable;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Time;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;

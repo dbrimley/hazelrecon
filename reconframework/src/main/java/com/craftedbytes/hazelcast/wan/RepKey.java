@@ -1,4 +1,4 @@
-package com.craftedbytes.hazelcast.wan.utils;
+package com.craftedbytes.hazelcast.wan;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;

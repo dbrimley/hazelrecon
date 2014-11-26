@@ -1,6 +1,6 @@
 package com.craftedbytes.hazelcast.wan.demo.domain;
 
-import com.craftedbytes.hazelcast.wan.utils.OriginAware;
+import com.craftedbytes.hazelcast.wan.OriginAware;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 

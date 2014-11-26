@@ -1,7 +1,7 @@
 package com.craftedbytes.hazelcast.wan.recon;
 
-import com.craftedbytes.hazelcast.wan.utils.RepKey;
-import com.craftedbytes.hazelcast.wan.utils.RepManager;
+import com.craftedbytes.hazelcast.wan.RepKey;
+import com.craftedbytes.hazelcast.wan.RepManager;
 import com.craftedbytes.hazelcast.wan.utils.TestUserKey;
 import com.craftedbytes.hazelcast.wan.utils.TestUserValue;
 import com.google.common.collect.Multimap;

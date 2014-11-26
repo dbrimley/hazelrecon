@@ -1,40 +1,20 @@
-package com.craftedbytes.hazelcast.wan.utils;
+package com.craftedbytes.hazelcast.wan;
 
-import com.hazelcast.config.GroupConfig;
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.config.WanReplicationRef;
-import com.hazelcast.core.BaseMap;
 import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.DistributedObjectEvent;
 import com.hazelcast.core.DistributedObjectListener;
 import com.hazelcast.core.EntryAdapter;
 import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
-import com.hazelcast.core.EntryView;
-import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.MapEvent;
-import com.hazelcast.map.EntryProcessor;
-import com.hazelcast.map.MapInterceptor;
 import com.hazelcast.map.merge.PassThroughMergePolicy;
-import com.hazelcast.map.merge.PutIfAbsentMapMergePolicy;
-import com.hazelcast.mapreduce.JobTracker;
-import com.hazelcast.mapreduce.aggregation.Aggregation;
-import com.hazelcast.mapreduce.aggregation.Supplier;
-import com.hazelcast.monitor.LocalMapStats;
 import com.hazelcast.nio.serialization.DataSerializable;
-import com.hazelcast.query.Predicate;
-import com.sun.management.VMOption;
 
-import javax.xml.crypto.Data;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
