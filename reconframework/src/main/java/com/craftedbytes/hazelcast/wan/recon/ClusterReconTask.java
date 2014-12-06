@@ -11,20 +11,25 @@ import java.util.concurrent.Callable;
 public class ClusterReconTask implements Callable<ClusterReconResults>{
 
     private HazelcastInstance localCluster;
+    private String localClusterName;
     private HazelcastInstance remoteCluster;
+    private String remoteClusterName;
     private String ignoredMap = "replication";
 
-    public ClusterReconTask(HazelcastInstance localCluster, HazelcastInstance remoteCluster) {
+    public ClusterReconTask(HazelcastInstance localCluster,
+                            String localClusterName,
+                            HazelcastInstance remoteCluster,
+                            String remoteClusterName) {
+
         this.localCluster = localCluster;
+        this.localClusterName = localClusterName;
         this.remoteCluster = remoteCluster;
+        this.remoteClusterName = remoteClusterName;
     }
 
     @Override
     public ClusterReconResults call()
             throws Exception {
-
-        String localClusterName = localCluster.getConfig().getGroupConfig().getName();
-        String remoteClusterName = remoteCluster.getConfig().getGroupConfig().getName();
 
         ClusterReconResults results = new ClusterReconResults(localClusterName,remoteClusterName);
 

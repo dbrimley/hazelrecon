@@ -66,7 +66,7 @@ public class RepManager implements DistributedObjectListener {
 
         this.hazelcastInstance = hazelcastInstance;
         this.repMap= repMap;
-        this.groupConfig = hazelcastInstance.getConfig().getGroupConfig().toString();
+        this.groupConfig = hazelcastInstance.getConfig().getGroupConfig().getName();
     }
 
     public void start() {
@@ -194,7 +194,10 @@ public class RepManager implements DistributedObjectListener {
                 // Otherwise stop it here and return as we don't want a loop.
                 if (dataSerializableKey instanceof OriginAware) {
                     OriginAware originAware = (OriginAware) dataSerializableKey;
-                    if (!originAware.getOriginGroupConfig().equals(groupConfig)) return;
+                    if (!originAware.getOriginGroupConfig().equals(groupConfig)){
+                        logger.info("Origins didn't match so stopping this here " + event);
+                        return;
+                    }
                 }
 
                 DataSerializable dataSerializableValue = (DataSerializable) event.getValue();
@@ -271,7 +274,7 @@ public class RepManager implements DistributedObjectListener {
 
             IMap<Object, Object> destinationMap = hazelcastInstance.getMap(destinationMapName);
 
-            destinationMap.put(key,value);
+            destinationMap.putAsync(key,value);
 
             logger.info("Entry Merged \n" + "k=" + key + "\n" + "v=" + value + "\n" + "to=" + destinationMapName);
 

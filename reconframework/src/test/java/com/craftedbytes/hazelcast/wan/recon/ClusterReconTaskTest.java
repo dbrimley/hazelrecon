@@ -72,7 +72,7 @@ public class ClusterReconTaskTest {
 
         // Now run the ClusterReconTask
 
-        ClusterReconTask clusterReconTask = new ClusterReconTask(hazelcastInstance1,hazelcastInstance2);
+        ClusterReconTask clusterReconTask = new ClusterReconTask(hazelcastInstance1, "cluster1", hazelcastInstance2, "cluster2");
         ClusterReconResults clusterReconResults = null;
         try {
             clusterReconResults = clusterReconTask.call();

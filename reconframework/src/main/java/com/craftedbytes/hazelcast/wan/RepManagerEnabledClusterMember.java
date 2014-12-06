@@ -28,6 +28,7 @@ public class RepManagerEnabledClusterMember {
     }
 
     private static void initReplication() {
+        IMap cars = hazelcastInstance.getMap("cars");
         IMap replicationMap = hazelcastInstance.getMap(REPLICATION_MAP);
         RepManager cluster1RepManager = new RepManager(hazelcastInstance,replicationMap);
         cluster1RepManager.start();

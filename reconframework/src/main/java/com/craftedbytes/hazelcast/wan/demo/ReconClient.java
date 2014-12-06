@@ -1,25 +1,37 @@
 package com.craftedbytes.hazelcast.wan.demo;
 
+import com.craftedbytes.hazelcast.wan.demo.domain.PortableFactory;
 import com.craftedbytes.hazelcast.wan.recon.ClusterReconResults;
 import com.craftedbytes.hazelcast.wan.recon.ClusterReconTask;
+import com.craftedbytes.hazelcast.wan.recon.ClusterRepairTask;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
-public class ReconClient {
+import java.util.Map;
+
+public class ReconClient extends ClientHelper{
 
     public static void main(String args[]){
 
-        ClientConfig clientConfig1 = new ClientConfig();
-        clientConfig1.getNetworkConfig().addAddress("127.0.0.1:5801");
-        HazelcastInstance localInstance = HazelcastClient.newHazelcastClient(clientConfig1);
+        //ClientConfig remoteConfig = getUSClientConfig();
+        ClientConfig remoteConfig = getCluster2();
 
+        remoteClient = HazelcastClient.newHazelcastClient(remoteConfig);
 
-        ClientConfig clientConfig2 = new ClientConfig();
-        clientConfig2.getNetworkConfig().addAddress("127.0.0.1:5701");
-        HazelcastInstance remoteInstance = HazelcastClient.newHazelcastClient(clientConfig2);
+        Map usCarMap = remoteClient.getMap("cars");
 
-        ClusterReconTask clusterReconTask = new ClusterReconTask(localInstance, remoteInstance);
+        System.out.println(usCarMap.size());
+
+        //ClientConfig localConfig = getEUClientConfig();
+        Config localConfig = getHCCluster1();
+
+        localClient = Hazelcast.newHazelcastInstance(localConfig);
+        localClient.getMap("cars");
+
+        ClusterReconTask clusterReconTask = new ClusterReconTask(localClient, localClusterName, remoteClient, remoteClusterName);
 
         ClusterReconTask clusterReconTask1 = clusterReconTask;
 
@@ -31,7 +43,20 @@ public class ReconClient {
             e.printStackTrace();
         }
 
-        System.out.println(reconResults);
+        System.out.println(reconResults.getMissingKeysByMap().size());
+
+        System.out.println(reconResults.getMissingKeysByMap().toString());
+
+        // Run Repair Task if needed
+        if (reconResults.getMissingKeysByMap().size() > 0){
+            ClusterRepairTask clusterRepairTask = new ClusterRepairTask(localClient, localClusterName, remoteClient, remoteClusterName, reconResults);
+            try {
+                clusterRepairTask.call();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 

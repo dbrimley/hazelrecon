@@ -11,17 +11,17 @@ import java.io.IOException;
  */
 public class RepKey implements DataSerializable {
 
-    private DataSerializable userKey;
+    private Object userKey;
     private String destinationMap;
 
     public RepKey(){}
 
-    public RepKey(DataSerializable userKey, String destinationMap){
+    public RepKey(Object userKey, String destinationMap){
         this.userKey = userKey;
         this.destinationMap = destinationMap;
     }
 
-    public DataSerializable getUserKey() {
+    public Object getUserKey() {
         return userKey;
     }
 

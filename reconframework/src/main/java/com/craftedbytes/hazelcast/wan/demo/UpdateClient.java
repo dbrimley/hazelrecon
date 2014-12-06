@@ -10,35 +10,48 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
-public class UpdateClient {
+import java.util.Map;
 
-    private static HazelcastInstance hazelcastInstance;
+public class UpdateClient
+        extends ClientHelper {
+
 
     public static void main(String args[]){
+        //ClientConfig remoteConfig = getUSClientConfig();
+        ClientConfig remoteConfig = getCluster2();
 
-        ClientConfig clientConfig1 = new ClientConfig();
-        clientConfig1.getNetworkConfig().addAddress("127.0.0.1:5801");
-        clientConfig1.getGroupConfig().setName("cluster2").setPassword("cluster2-pass");
-        hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig1);
+        remoteClient = HazelcastClient.newHazelcastClient(remoteConfig);
 
-        //Config config = new ClasspathXmlConfig("hazelcast-cluster-2.xml");
-        //hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+        Map usCarMap = remoteClient.getMap("cars");
+
+        System.out.println(usCarMap.size());
+
+        //ClientConfig localConfig = getEUClientConfig();
+        ClientConfig localConfig = getCluster1();
+
+        localClient = HazelcastClient.newHazelcastClient(localConfig);
+
+        Map euCarMap = localClient.getMap("cars");
+
+        System.out.println(euCarMap.size());
 
         populateData();
+
+        System.exit(0);
     }
 
     private static void populateData() {
 
-        IMap<Object, Object> users = hazelcastInstance.getMap("users");
+        IMap<Object, Object> cars = localClient.getMap("cars");
 
-        String origin = hazelcastInstance.getConfig().getGroupConfig().toString();
-
-        int start = new Integer(1000);
-        int maxPopulation = start + 100;
+        int start = new Integer(2000);
+        int maxPopulation = start + 1000;
 
         for(int i=start;i<maxPopulation;i++) {
-            users.put(new TestUserKey(origin, new Integer(i).toString()), new TestUserValue(new Integer(i).toString()));
+            cars.put(new TestUserKey(localClusterName, new Integer(i).toString()), new TestUserValue(new Integer(i).toString()));
+            System.out.println(cars.size());
         }
+
 
     }
 
